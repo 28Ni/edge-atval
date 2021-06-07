@@ -30,20 +30,18 @@
     ((comp count distinct vals)
      *str->opcode*)))
 
-(def ^:dynamic *use-opcode-categories* true)
-
 (def ^:dynamic *opcode->category*
-  (if *use-opcode-categories*
-    (try
-      (clojure-edn/read-string
-       (slurp "opcode->category.edn"))
-      (catch java.io.FileNotFoundException _
-        ::opcode->category_edn-unavaiable))
-    (zipmap (range *num-opcodes*)
-            (range *num-opcodes*))))
+  (try
+    (clojure-edn/read-string
+     (slurp "opcode->category.edn"))
+    (catch java.io.FileNotFoundException _
+      ::opcode->category_edn-unavaiable)))
 
 (def ^:dynamic *num-opcode-categories*
-  (count *opcode->category*))
+  (if (keyword? *opcode->category*)
+    *opcode->category*
+    ((comp count)
+     *opcode->category*)))
 
 ;; operational parameters (constants)
 
